@@ -1,11 +1,12 @@
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, CMake
 
 
 class InjaConan(ConanFile):
     name = "inja"
     version = "2.1.0"
     license = "MIT"
-    url = "https://pantor.github.io/inja/"
+    homepage = "https://pantor.github.io/inja/"
+    url = "https://github.com/torshind/conan-inja/"
     description = "A Template Engine for Modern C++"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
@@ -15,8 +16,9 @@ class InjaConan(ConanFile):
     requires = "nlohmann_json/3.6.1@torshind/stable"
 
     def source(self):
-        git = tools.Git()
-        git.clone("https://github.com/pantor/inja.git", "v" + self.version)
+        self.run("git clone --branch v"
+                 + self.version
+                 + " https://github.com/pantor/inja.git")
 
     def build(self):
         pass
@@ -26,7 +28,7 @@ class InjaConan(ConanFile):
         cmake.definitions["INJA_USE_EMBEDDED_JSON"] = "OFF"
         cmake.definitions["BUILD_TESTING"] = "OFF"
         cmake.definitions["BUILD_BENCHMARK"] = "OFF"
-        cmake.configure()
+        cmake.configure(source_folder="inja")
         cmake.install()
 
     def package_info(self):
